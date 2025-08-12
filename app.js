@@ -1,1 +1,1 @@
-// Main app JS logic
+// JS logic placeholder

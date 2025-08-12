@@ -1,1 +1,1 @@
-// JS logic for admin page
+// Admin page JS placeholder

@@ -1,1 +1,1 @@
-// Service Worker for offline caching
+// Service worker logic placeholder
