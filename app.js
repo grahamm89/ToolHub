@@ -1,1 +1,1 @@
-// JS logic for Tools Hub placeholder
+// Main app JS logic

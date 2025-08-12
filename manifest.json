@@ -1,1 +1,12 @@
-{ "name": "Tools Hub", "start_url": ".", "display": "standalone" }
+{
+  "name": "Tool Hub",
+  "short_name": "Tools",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#004085",
+  "theme_color": "#004085",
+  "icons": [
+    {"src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png"}
+  ]
+}
