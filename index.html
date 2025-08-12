@@ -2,32 +2,114 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Diversey Tool Hub</title>
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="apple-touch-icon" sizes="180x180" href="diversey-logo.png">
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Diversey Productivity Tools</title>
   <link rel="manifest" href="manifest.json">
-  <script defer src="app.js"></script>
+  <link rel="icon" href="assets/favicon.ico">
+  <meta name="theme-color" content="#0ea5a0">
   <style>
-    .brand-bg { background-color: #00d084; }
-    .fade-in { animation: fadeIn 1.5s ease-in; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    :root{
+      --bg:#f5f7fa;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --brand:#0ea5a0;
+      --brand-dark:#0b827e;
+      --chip:#e5f6f5;
+      --chip-active:#0ea5a0;
+      --chip-text:#065f5b;
+      --shadow:0 6px 16px rgba(0,0,0,.08);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background:var(--bg);
+      color:var(--text);
+    }
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:32px 16px 72px;
+    }
+    header{
+      text-align:center;
+      margin-bottom:28px;
+    }
+    header img{
+      width:120px;
+      height:auto;
+      display:block;
+      margin:0 auto 8px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,.05));
+    }
+    h1{font-size:28px; margin:6px 0 6px; font-weight:700;}
+    .sub{color:var(--muted); margin:0 0 18px; font-size:15px;}
+    .chips{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:12px 0 8px;}
+    .chip{
+      border:none;
+      padding:8px 14px;
+      border-radius:10px;
+      background:var(--chip);
+      color:var(--chip-text);
+      font-weight:600;
+      cursor:pointer;
+    }
+    .chip.active{ background:var(--chip-active); color:#fff; }
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+      gap:22px;
+      margin-top:22px;
+    }
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px 18px;
+    }
+    .card h3{
+      margin:0;
+      font-size:18px;
+      display:flex; align-items:center; gap:10px;
+    }
+    .desc{ color:var(--muted); font-size:14px; margin:8px 0 16px; min-height:40px;}
+    .btn{
+      display:inline-block;
+      border:none;
+      background:#22c55e;
+      color:white;
+      padding:10px 14px;
+      border-radius:10px;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow:0 2px 6px rgba(34,197,94,.35);
+    }
+    .btn:active{ transform: translateY(1px); }
+    footer{ text-align:center; color:var(--muted); font-size:12px; margin-top:28px; }
   </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans">
-  <header class="text-center p-6">
-    <img src="diversey-logo.png" alt="Diversey Logo" class="mx-auto h-16 mb-4 fade-in">
-    <h1 class="text-3xl font-bold fade-in">Diversey Productivity Tools</h1>
-    <p class="text-lg fade-in text-gray-600 mt-2">Field & Sales Apps, Made Simple</p>
-  </header>
+<body>
+  <div class="wrap">
+    <header>
+      <img src="assets/diversey-logo.png" alt="Diversey logo" />
+      <h1>Diversey Productivity Tools</h1>
+      <p class="sub">Field &amp; Sales Apps, Made Simple</p>
+      <div class="chips" id="filters">
+        <button class="chip active" data-filter="all">All</button>
+        <button class="chip" data-filter="field">Field</button>
+        <button class="chip" data-filter="sales">Sales</button>
+        <button class="chip" data-filter="reference">Reference</button>
+      </div>
+    </header>
 
-  <main id="tool-container" class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fade-in"></main>
+    <main>
+      <section class="grid" id="appsGrid" aria-live="polite"></section>
+    </main>
+    <footer>Offline ready. Updates when you revisit.</footer>
+  </div>
 
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js');
-    }
-  </script>
+  <script defer src="js/app.js"></script>
 </body>
 </html>
