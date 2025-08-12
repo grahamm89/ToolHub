@@ -19,5 +19,12 @@
     "description": "Quick-access reference resources for field and technical support.",
     "icon": "\ud83d\udcda",
     "category": "reference"
-  }
+  },
+  {
+  "name": "Detergent Concentration Tool",
+  "url": "https://grahamm89.github.io/XRefDetergent/",
+  "description": "Quick drop→g/L lookup with reverse search and printable steps. Works offline.",
+  "icon": "🧪",
+  "category": "Field"
+}
 ]
