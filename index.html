@@ -111,15 +111,22 @@
       <div id="iosTip" style="display:none;margin-top:8px;background:#fff4e6;border:1px solid #ffd8a8;color:#7c4400;padding:10px 12px;border-radius:10px;">
         <strong>Tip (iOS):</strong> Tap <span aria-label="Share">Share</span> → <strong>Add to Home Screen</strong> to install.
       </div>
+
+      <div id="macSafariTip" style="display:none;margin-top:8px;background:#eef6ff;border:1px solid #b6daff;color:#004085;padding:10px 12px;border-radius:10px;">
+        <strong>Tip (Safari on Mac):</strong> Go to <em>File → Add to Dock</em> or <em>Share → Add to Dock</em> to install this app.
+      </div>
     </header>
     
     
 
+    
+      <div style="position:fixed; top:18px; right:18px; display:flex; gap:8px; z-index:1000;">
+        <button id="aboutBtn" class="chip">About</button>
+        <button id="editBtn" class="chip" style="display:none;">Edit Tools</button>
+      </div>
+
     <main>
-      <button id="editBtn" class="chip"
-      ><\/button>
-      <button id="aboutBtn" class="chip" style="position:fixed;right:110px;top:18px;">About<\/button>
-      <button id="editBtn2" class="chip" style="display:none" style="position:fixed;right:18px;top:18px;">Edit tools</button>
+      
 
       <section class="grid" id="appsGrid" aria-live="polite"></section>
     </main>

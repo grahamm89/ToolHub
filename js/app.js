@@ -105,7 +105,7 @@ if (dismissInstall) {
 }
 
 // ----- Simple editor modal -----
-const editBtn = document.getElementById('editBtn');
+const editBtn = document.getElementById("editBtn");
 const editorModal = document.getElementById('editorModal');
 const toolsEditor = document.getElementById('toolsEditor');
 const closeEditor = document.getElementById('closeEditor');
@@ -240,3 +240,35 @@ function renderAbout() {
 if (aboutBtn) aboutBtn.addEventListener('click', () => { renderAbout(); aboutModal.style.display = 'block'; });
 if (closeAbout) closeAbout.addEventListener('click', () => aboutModal.style.display = 'none');
 if (aboutModal) aboutModal.addEventListener('click', (e) => { if (e.target === aboutModal) aboutModal.style.display = 'none'; });
+
+
+// ----- Keyboard shortcut to reveal Edit Tools button -----
+(function(){
+  let lastPress = 0;
+  document.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 'e') {
+      const now = Date.now();
+      if (now - lastPress < 400) {
+        const editBtnEl = document.getElementById('editBtn');
+        if (editBtnEl) {
+          editBtnEl.style.display = (editBtnEl.style.display === 'none' ? 'inline-block' : 'none');
+        }
+      }
+      lastPress = now;
+    }
+  });
+})();
+
+
+// ----- macOS Safari install tip -----
+(function() {
+  const ua = navigator.userAgent.toLowerCase();
+  const isMac = /macintosh/.test(ua);
+  const isSafari = /^((?!chrome|chromium|android).)*safari/.test(ua);
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  const hasBeforeInstall = 'onbeforeinstallprompt' in window;
+  const macSafariTip = document.getElementById('macSafariTip');
+  if (isMac && isSafari && !isStandalone && !hasBeforeInstall && macSafariTip) {
+    macSafariTip.style.display = 'block';
+  }
+})();
