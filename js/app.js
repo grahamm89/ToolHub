@@ -1,80 +1,93 @@
-// Register service worker (silent fail if not supported)
+
+// ------- Service worker (relative path for GitHub Pages) -------
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('service-worker.js').catch(()=>{});
   });
 }
 
-const state = {
-  tools: [],
-  filter: 'all'
-};
-
+// ------- State & DOM -------
+const state = { tools: [], filter: 'all' };
 const grid = document.getElementById('appsGrid');
 const filters = document.getElementById('filters');
 
+// ------- Diagnostics & Error UI -------
+const errorBanner = document.getElementById('errorBanner');
+function showError(msg){
+  console.error('[App Error]', msg);
+  if (errorBanner){
+    errorBanner.textContent = String(msg);
+    errorBanner.style.display = 'block';
+  }
+}
+
+// Monkey-patch fetch to surface errors in UI
+(function(){
+  const _fetch = window.fetch;
+  window.fetch = async function(resource, init){
+    try {
+      const res = await _fetch(resource, init);
+      if (!res.ok) showError(`Failed to fetch ${typeof resource === 'string' ? resource : (resource && resource.url)} — HTTP ${res.status}`);
+      return res;
+    } catch (err){
+      showError(`Network error while fetching ${typeof resource === 'string' ? resource : (resource && resource.url)} — ${err && err.message}`);
+      throw err;
+    }
+  };
+})();
+
+// ------- Data load -------
 fetch('tools.json?v=' + Date.now(), { cache: 'no-cache' })
   .then(r => r.json())
   .then(data => {
+    if (!Array.isArray(data)) throw new Error('tools.json is not an array');
     state.tools = data;
     render();
+    try { track && track('page_view'); } catch(e) {}
   })
-  .catch(() => {
-    grid.innerHTML = '<p>Unable to load tools.</p>';
+  .catch(err => {
+    showError('Could not load tools.json: ' + (err && err.message));
   });
 
-filters.addEventListener('click', (e) => {
-  const btn = e.target.closest('button[data-filter]');
-  if (!btn) return;
-  state.filter = btn.dataset.filter;
-  [...filters.querySelectorAll('.chip')].forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  render();
-});
+// ------- Filters (with analytics) -------
+if (filters) {
+  filters.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-filter]');
+    if (!btn) return;
+    state.filter = btn.dataset.filter;
+    [...filters.querySelectorAll('.chip')].forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    try { track && track('filter_click', { filter: state.filter }); } catch(e) {}
+    render();
+  });
+}
 
+// ------- Render -------
 function render() {
   const items = state.tools.filter(t => state.filter === 'all' ? true : (t.category || '').toLowerCase() === state.filter);
+  if (!Array.isArray(state.tools)) {
+    showError('tools.json loaded but is not an array.');
+  } else if (state.tools.length === 0) {
+    showError('tools.json is valid but contains 0 tools.');
+  }
   if (!items.length) {
     grid.innerHTML = '<p>No tools in this category yet.</p>';
     return;
   }
   grid.innerHTML = items.map(tool => Card(tool)).join('');
+
+  // Delegate link clicks for analytics
+  grid.addEventListener('click', (e) => {
+    const a = e.target.closest('a.btn');
+    if (!a) return;
+    const nameEl = a.parentElement && a.parentElement.querySelector('h3');
+    const name = nameEl ? nameEl.textContent.trim() : 'unknown';
+    try { track && track('launch_click', { name, href: a.href }); } catch(e) {}
+  }, { once: true });
 }
 
-
-// Analytics hooks
-logEvent('page_view');
-
-// Hook install prompt
-window.addEventListener('beforeinstallprompt', () => logEvent('install_prompt_shown'));
-if (installBtn) {
-  installBtn.addEventListener('click', () => logEvent('install_prompt_clicked'));
-}
-if (dismissInstall) {
-  dismissInstall.addEventListener('click', () => logEvent('install_prompt_dismissed'));
-}
-
-// Hook category filter clicks
-filters.addEventListener('click', (e) => {
-  const btn = e.target.closest('button[data-filter]');
-  if (btn) logEvent('filter_selected', { filter: btn.dataset.filter });
-});
-
-// Hook card launches
+// Card component (make sure return stays inside function)
 function Card(tool){
-  const icon = tool.icon || '🔧';
-  const name = escapeHtml(tool.name || 'Untitled');
-  const desc = escapeHtml(tool.description || '');
-  const url = tool.url || '#';
-  return `
-  <article class="card">
-    <h3>${icon} ${name}</h3>
-    <p class="desc">${desc}</p>
-    <a class="btn" href="${url}" target="_blank" rel="noopener" onclick="logEvent('card_launch', {name: '${name}'})">Launch</a>
-  </article>
-  `;
-}
-
   const icon = tool.icon || '🔧';
   const name = escapeHtml(tool.name || 'Untitled');
   const desc = escapeHtml(tool.description || '');
@@ -97,35 +110,35 @@ function escapeHtml(str){
     .replaceAll("'",'&#039;');
 }
 
-
-// ----- Last updated footer -----
+// ------- Footer timestamp -------
 (function(){
   const footer = document.querySelector('footer');
-  if (footer) {
-    const stamp = new Date().toLocaleString();
-    footer.textContent = 'Offline ready. Updated: ' + stamp;
-  }
+  if (footer) footer.textContent = 'Offline ready. Updated: ' + new Date().toLocaleString();
 })();
 
-// ----- Install prompt (PWA) -----
+// ------- Install prompt (Chromium) -------
 let deferredPrompt = null;
 const installBanner = document.getElementById('installBanner');
 const installBtn = document.getElementById('installBtn');
 const dismissInstall = document.getElementById('dismissInstall');
 
+// Edge-specific label
+const isEdge = navigator.userAgent.includes('Edg/');
+if (installBtn && isEdge) { installBtn.textContent = 'Install in Edge'; }
+
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  if (!localStorage.getItem('installDismissed')) {
-    installBanner.style.display = 'block';
-  }
+  try { track && track('install_prompt_shown'); } catch(e) {}
+  if (!localStorage.getItem('installDismissed')) installBanner.style.display = 'block';
 });
 
 if (installBtn) {
   installBtn.addEventListener('click', async () => {
     if (!deferredPrompt) return;
     deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
+    const choice = await deferredPrompt.userChoice;
+    try { track && track('install_prompt_result', { outcome: choice && choice.outcome }); } catch(e) {}
     installBanner.style.display = 'none';
     deferredPrompt = null;
   });
@@ -134,10 +147,28 @@ if (dismissInstall) {
   dismissInstall.addEventListener('click', () => {
     installBanner.style.display = 'none';
     localStorage.setItem('installDismissed', '1');
+    try { track && track('install_prompt_dismiss'); } catch(e) {}
   });
 }
 
-// ----- Simple editor modal -----
+// ------- Hidden editor (E twice) -------
+(function(){
+  let lastPress = 0;
+  document.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 'e') {
+      const now = Date.now();
+      if (now - lastPress < 400) {
+        const editBtnEl = document.getElementById('editBtn');
+        if (editBtnEl) {
+          editBtnEl.style.display = (editBtnEl.style.display === 'none' ? 'inline-block' : 'none');
+        }
+      }
+      lastPress = now;
+    }
+  });
+})();
+
+// ------- Editor modal handlers -------
 const editBtn = document.getElementById("editBtn");
 const editorModal = document.getElementById('editorModal');
 const toolsEditor = document.getElementById('toolsEditor');
@@ -146,16 +177,14 @@ const applyPreview = document.getElementById('applyPreview');
 const downloadJson = document.getElementById('downloadJson');
 
 function openEditor() {
-  toolsEditor.value = JSON.stringify(state.tools, null, 2);
-  editorModal.style.display = 'block';
+  if (toolsEditor) toolsEditor.value = JSON.stringify(state.tools, null, 2);
+  if (editorModal) editorModal.style.display = 'block';
 }
-function closeModal(){ editorModal.style.display = 'none'; }
+function closeModal(){ if (editorModal) editorModal.style.display = 'none'; }
 
 if (editBtn) editBtn.addEventListener('click', openEditor);
 if (closeEditor) closeEditor.addEventListener('click', closeModal);
-if (editorModal) editorModal.addEventListener('click', (e)=>{
-  if (e.target === editorModal) closeModal();
-});
+if (editorModal) editorModal.addEventListener('click', (e)=>{ if (e.target === editorModal) closeModal(); });
 
 if (applyPreview) applyPreview.addEventListener('click', () => {
   try {
@@ -185,115 +214,16 @@ if (downloadJson) downloadJson.addEventListener('click', () => {
   }
 });
 
-
-// ----- iOS Install Tip -----
-(function(){
-  const isIos = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
-  const isInStandalone = window.navigator.standalone === true;
-  if (isIos && !isInStandalone) {
-    const tip = document.createElement('div');
-    tip.style.cssText = 'position:fixed;bottom:12px;left:50%;transform:translateX(-50%);background:#0ea5a0;color:white;padding:10px 14px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.2);font-size:14px;z-index:1000;max-width:90%;text-align:center;';
-    tip.innerHTML = '📲 To install, tap <strong>Share</strong> <span style="font-size:18px;">⬆️</span> and choose <strong>Add to Home Screen</strong>.';
-    document.body.appendChild(tip);
-    setTimeout(()=> tip.remove(), 10000);
-  }
-})();
-
-
-// ----- About Menu -----
-(function(){
-  const btn = document.createElement('button');
-  btn.textContent = 'About';
-  btn.className = 'chip';
-  btn.style.position = 'fixed';
-  btn.style.left = '18px';
-  btn.style.bottom = '18px';
-  btn.style.zIndex = 1000;
-  document.body.appendChild(btn);
-
-  const modal = document.createElement('div');
-  modal.style.cssText = 'display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);padding:24px;z-index:1100;';
-  modal.innerHTML = `<div style="max-width:500px;margin:40px auto;background:#fff;border-radius:12px;box-shadow:0 10px 24px rgba(0,0,0,.2);padding:16px;">
-    <h2 style="margin:6px 0 10px;">About This App</h2>
-    <p><strong>Version:</strong> ${new Date().toLocaleDateString()}-${new Date().toLocaleTimeString()}</p>
-    <p>This app is a PWA for quick access to Diversey field & sales tools.</p>
-    <h3>Changelog</h3>
-    <ul style="font-size:14px;color:#555;line-height:1.4;">
-      <li>Added install banner and iOS tip</li>
-      <li>Added built-in tools.json editor</li>
-      <li>Added footer last-updated timestamp</li>
-      <li>Cache-busting for tools.json updates</li>
-    </ul>
-    <div style="text-align:right;margin-top:14px;">
-      <button id="closeAbout" class="chip">Close</button>
-    </div>
-  </div>`;
-  document.body.appendChild(modal);
-
-  btn.addEventListener('click', ()=> modal.style.display = 'block');
-  modal.addEventListener('click', (e)=>{
-    if (e.target.id === 'closeAbout' || e.target === modal) {
-      modal.style.display = 'none';
-    }
-  });
-})();
-
-
-// ----- iOS install tip -----
+// ------- iOS Safari tip -------
 (function() {
   const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
   const hasBeforeInstall = 'onbeforeinstallprompt' in window;
   const iosTip = document.getElementById('iosTip');
-  // Show the tip only on iOS Safari where beforeinstallprompt is not supported and not standalone yet
-  if (isIOS && !isStandalone && !hasBeforeInstall && iosTip) {
-    iosTip.style.display = 'block';
-  }
+  if (isIOS && !isStandalone && !hasBeforeInstall && iosTip) iosTip.style.display = 'block';
 })();
 
-// ----- About modal -----
-const aboutBtn = document.getElementById('aboutBtn');
-const aboutModal = document.getElementById('aboutModal');
-const closeAbout = document.getElementById('closeAbout');
-const aboutContent = document.getElementById('aboutContent');
-const APP_VERSION = '1.2.0';
-const CHANGELOG = ["Add install banner and editor modal.", "Auto cache-buster for tools.json.", "iOS install tip for Safari.", "About modal with version + changelog."];
-
-function renderAbout() {
-  const list = CHANGELOG.map(item => '<li>' + item + '</li>').join('');
-  aboutContent.innerHTML = `
-    <p><strong>Version:</strong> ${APP_VERSION}</p>
-    <p><strong>Build time:</strong> $2025-08-12 02:22</p>
-    <p><strong>PWA:</strong> Offline caching via service worker; installable on supported browsers.</p>
-    <p><strong>Changelog:</strong></p>
-    <ul>${list}</ul>
-  `;
-}
-
-if (aboutBtn) aboutBtn.addEventListener('click', () => { renderAbout(); aboutModal.style.display = 'block'; });
-if (closeAbout) closeAbout.addEventListener('click', () => aboutModal.style.display = 'none');
-if (aboutModal) aboutModal.addEventListener('click', (e) => { if (e.target === aboutModal) aboutModal.style.display = 'none'; });
-
-
-// ----- Keyboard shortcut to reveal Edit Tools button -----
-(function(){
-  let lastPress = 0;
-  document.addEventListener('keydown', (e) => {
-    if (e.key.toLowerCase() === 'e') {
-      const now = Date.now();
-      if (now - lastPress < 400) {
-        const editBtnEl = document.getElementById('editBtn');
-        if (editBtnEl) {
-          editBtnEl.style.display = (editBtnEl.style.display === 'none' ? 'inline-block' : 'none');
-        }
-      }
-      lastPress = now;
-    }
-  });
-})();
-
-
-// ----- macOS Safari install tip -----
+// ------- macOS Safari tip -------
 (function() {
   const ua = navigator.userAgent.toLowerCase();
   const isMac = /macintosh/.test(ua);
@@ -301,50 +231,28 @@ if (aboutModal) aboutModal.addEventListener('click', (e) => { if (e.target === a
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
   const hasBeforeInstall = 'onbeforeinstallprompt' in window;
   const macSafariTip = document.getElementById('macSafariTip');
-  if (isMac && isSafari && !isStandalone && !hasBeforeInstall && macSafariTip) {
-    macSafariTip.style.display = 'block';
-  }
+  if (isMac && isSafari && !isStandalone && !hasBeforeInstall && macSafariTip) macSafariTip.style.display = 'block';
 })();
 
+// ------- About modal bindings -------
+const aboutBtn = document.getElementById('aboutBtn');
+const aboutModal = document.getElementById('aboutModal');
+const closeAbout = document.getElementById('closeAbout');
+const aboutContent = document.getElementById('aboutContent');
+const APP_VERSION = '1.2.0';
+const CHANGELOG = ["Add install banner and editor modal.", "Auto cache-buster for tools.json.", "iOS & macOS install tips.", "About modal with version + changelog.", "Diagnostics for tools.json errors."];
 
-// ===== Diagnostics & Error UI =====
-const errorBanner = document.getElementById('errorBanner');
-function showError(msg){
-  console.error('[App Error]', msg);
-  if (errorBanner){
-    errorBanner.textContent = String(msg);
-    errorBanner.style.display = 'block';
-  } else {
-    alert(msg);
-  }
+function renderAbout() {
+  if (!aboutContent) return;
+  const list = CHANGELOG.map(item => '<li>' + item + '</li>').join('');
+  aboutContent.innerHTML = [
+    '<p><strong>Version:</strong> ' + APP_VERSION + '</p>',
+    '<p><strong>Build time:</strong> ' + new Date().toLocaleString() + '</p>',
+    '<p><strong>PWA:</strong> Offline caching via service worker; installable on supported browsers.</p>',
+    '<p><strong>Changelog:</strong></p>',
+    '<ul>' + list + '</ul>'
+  ].join('');
 }
-
-// Wrap fetch with better errors
-(function(){
-  const originalFetch = window.fetch;
-  window.fetch = async function(resource, init){
-    try {
-      const res = await originalFetch(resource, init);
-      if (!res.ok){
-        showError(`Failed to fetch ${typeof resource === 'string' ? resource : (resource && resource.url)} — HTTP ${res.status}`);
-      }
-      return res;
-    } catch (err){
-      showError(`Network error while fetching ${typeof resource === 'string' ? resource : (resource && resource.url)} — ${err && err.message}`);
-      throw err;
-    }
-  };
-})();
-
-// Validate tools after we load them
-const _renderOriginal = render;
-render = function(){
-  try {
-    if (!Array.isArray(state.tools)){
-      showError('tools.json loaded but is not an array.');
-    } else if (state.tools.length === 0){
-      showError('tools.json is valid but contains 0 tools.');
-    }
-  } catch(e){}
-  _renderOriginal();
-};
+if (aboutBtn) aboutBtn.addEventListener('click', () => { renderAbout(); if (aboutModal) aboutModal.style.display = 'block'; });
+if (closeAbout) closeAbout.addEventListener('click', () => { if (aboutModal) aboutModal.style.display = 'none'; });
+if (aboutModal) aboutModal.addEventListener('click', (e) => { if (e.target === aboutModal) aboutModal.style.display = 'none'; });
