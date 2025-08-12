@@ -1,15 +1,15 @@
 [
   {
-    "name": "Dishwasher Troubleshooter",
+    "name": "Peg Settings",
     "url": "https://www.solenis.com/en/",
-    "description": "Step-by-step tool to identify and resolve dishwashing issues.",
+    "description": "Look up correct QFM peg settings",
     "icon": "🧰",
     "category": "field"
   },
   {
     "name": "Barchester Audit",
     "url": "https://www.solenis.com/en/",
-    "description": "INSERT DISC",
+    "description": "Not live",
     "icon": "🧪",
     "category": "sales"
   },
@@ -23,8 +23,15 @@
   {
     "name": "Detergent Concentration / Titration Testing",
     "url": "https://grahamm89.github.io/XRefDetergent/",
-    "description": "Concentration lookup with reverse search and printable steps. Works offline - refine desc",
+    "description": "description required",
     "icon": "🧪",
     "category": "Field"
+  },
+    {
+    "name": "Dishwasher Troubleshooter",
+    "url": "https://www.solenis.com/en/",
+    "description": "Not Live",
+    "icon": "🧰",
+    "category": "field"
   }
 ]
