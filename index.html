@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diversey Tool Hub</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="diversey-logo.png">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <script defer src="app.js"></script>
+  <style>
+    .brand-bg { background-color: #00d084; }
+    .fade-in { animation: fadeIn 1.5s ease-in; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+  <header class="text-center p-6">
+    <img src="diversey-logo.png" alt="Diversey Logo" class="mx-auto h-16 mb-4 fade-in">
+    <h1 class="text-3xl font-bold fade-in">Diversey Productivity Tools</h1>
+    <p class="text-lg fade-in text-gray-600 mt-2">Field & Sales Apps, Made Simple</p>
+  </header>
+
+  <main id="tool-container" class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fade-in"></main>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+  </script>
+</body>
+</html>
