@@ -305,3 +305,46 @@ if (aboutModal) aboutModal.addEventListener('click', (e) => { if (e.target === a
     macSafariTip.style.display = 'block';
   }
 })();
+
+
+// ===== Diagnostics & Error UI =====
+const errorBanner = document.getElementById('errorBanner');
+function showError(msg){
+  console.error('[App Error]', msg);
+  if (errorBanner){
+    errorBanner.textContent = String(msg);
+    errorBanner.style.display = 'block';
+  } else {
+    alert(msg);
+  }
+}
+
+// Wrap fetch with better errors
+(function(){
+  const originalFetch = window.fetch;
+  window.fetch = async function(resource, init){
+    try {
+      const res = await originalFetch(resource, init);
+      if (!res.ok){
+        showError(`Failed to fetch ${typeof resource === 'string' ? resource : (resource && resource.url)} — HTTP ${res.status}`);
+      }
+      return res;
+    } catch (err){
+      showError(`Network error while fetching ${typeof resource === 'string' ? resource : (resource && resource.url)} — ${err && err.message}`);
+      throw err;
+    }
+  };
+})();
+
+// Validate tools after we load them
+const _renderOriginal = render;
+render = function(){
+  try {
+    if (!Array.isArray(state.tools)){
+      showError('tools.json loaded but is not an array.');
+    } else if (state.tools.length === 0){
+      showError('tools.json is valid but contains 0 tools.');
+    }
+  } catch(e){}
+  _renderOriginal();
+};
