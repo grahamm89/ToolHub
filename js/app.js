@@ -41,7 +41,40 @@ function render() {
   grid.innerHTML = items.map(tool => Card(tool)).join('');
 }
 
+
+// Analytics hooks
+logEvent('page_view');
+
+// Hook install prompt
+window.addEventListener('beforeinstallprompt', () => logEvent('install_prompt_shown'));
+if (installBtn) {
+  installBtn.addEventListener('click', () => logEvent('install_prompt_clicked'));
+}
+if (dismissInstall) {
+  dismissInstall.addEventListener('click', () => logEvent('install_prompt_dismissed'));
+}
+
+// Hook category filter clicks
+filters.addEventListener('click', (e) => {
+  const btn = e.target.closest('button[data-filter]');
+  if (btn) logEvent('filter_selected', { filter: btn.dataset.filter });
+});
+
+// Hook card launches
 function Card(tool){
+  const icon = tool.icon || '🔧';
+  const name = escapeHtml(tool.name || 'Untitled');
+  const desc = escapeHtml(tool.description || '');
+  const url = tool.url || '#';
+  return `
+  <article class="card">
+    <h3>${icon} ${name}</h3>
+    <p class="desc">${desc}</p>
+    <a class="btn" href="${url}" target="_blank" rel="noopener" onclick="logEvent('card_launch', {name: '${name}'})">Launch</a>
+  </article>
+  `;
+}
+
   const icon = tool.icon || '🔧';
   const name = escapeHtml(tool.name || 'Untitled');
   const desc = escapeHtml(tool.description || '');
