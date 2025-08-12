@@ -1,1 +1,8 @@
-[]
+[
+  {
+    "name": "Detergent Concentration Tool",
+    "description": "Quick reference for drop counts and concentrations.",
+    "url": "./tools/detergent/index.html",
+    "icon": "\ud83e\uddea"
+  }
+]

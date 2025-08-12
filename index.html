@@ -1,2 +1,46 @@
 <!DOCTYPE html>
-<html><head><meta charset='UTF-8'><title>ToolHub</title></head><body><h1>ToolHub Works!</h1><script src='./app.js'></script></body></html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ToolHub</title>
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" href="./assets/favicon.png" />
+  <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
+  <link rel="stylesheet" href="./style.css" />
+  <meta name="theme-color" content="#004085">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="./assets/logo.svg" class="logo" alt="ToolHub logo" />
+      <div>
+        <h1>ToolHub</h1>
+        <p class="muted">Field & sales tools • Offline-ready</p>
+      </div>
+    </div>
+    <div class="actions">
+      <button id="aboutBtn" class="chip">About</button>
+    </div>
+  </header>
+
+  <main class="content">
+    <section id="cards" class="grid"></section>
+  </main>
+
+  <footer id="stamp" class="footer">Offline ready.</footer>
+
+  <!-- About -->
+  <div id="aboutModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
+    <div class="dialog">
+      <header class="dialog-hd">
+        <h2 id="aboutTitle">About ToolHub</h2>
+        <button id="closeAbout" class="chip">Close</button>
+      </header>
+      <div id="aboutContent" class="dialog-bd">Loading…</div>
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
