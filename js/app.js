@@ -256,3 +256,21 @@ function renderAbout() {
 if (aboutBtn) aboutBtn.addEventListener('click', () => { renderAbout(); if (aboutModal) aboutModal.style.display = 'block'; });
 if (closeAbout) closeAbout.addEventListener('click', () => { if (aboutModal) aboutModal.style.display = 'none'; });
 if (aboutModal) aboutModal.addEventListener('click', (e) => { if (e.target === aboutModal) aboutModal.style.display = 'none'; });
+
+// ---- Auto-refresh when a new Service Worker activates ----
+(function(){
+  if (!('serviceWorker' in navigator)) return;
+  let hasRefreshed = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (hasRefreshed) return;
+    hasRefreshed = true;
+    window.location.reload();
+  });
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    const data = event && event.data;
+    if (data && data.type === 'SW_ACTIVATED_RELOAD' && !hasRefreshed) {
+      hasRefreshed = true;
+      window.location.reload();
+    }
+  });
+})();
