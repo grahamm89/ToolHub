@@ -37,8 +37,22 @@
     {
     "name": "Product Support Shop",
     "url": "https://diverseyproductsupport.com/",
-    "description": "Not Live",
+    "description": "Place an order for support materials",
     "icon": "🖇️",
-    "category": "field"
+    "category": "reference"
+  },
+    {
+    "name": "Safety Data Sheets",
+    "url": "https://sds.diversey.com/?guiLang=EN",
+    "description": "Access the SDS database",
+    "icon": "👩‍🔬👷‍♂️",
+    "category": "reference"
+  },
+    {
+    "name": "Wellbeing Self-Assessment Tool",
+    "url": "https://sds.diversey.com/?guiLang=EN",
+    "description": "TBC",
+    "icon": "🏥",
+    "category": "reference"
   }
 ]
