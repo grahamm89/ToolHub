@@ -33,5 +33,12 @@
     "description": "Not Live",
     "icon": "🧰",
     "category": "field"
+  },
+    {
+    "name": "Product Support Shop",
+    "url": "https://diverseyproductsupport.com/",
+    "description": "Not Live",
+    "icon": "🖇️",
+    "category": "field"
   }
 ]
