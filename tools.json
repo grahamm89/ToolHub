@@ -1,11 +1,18 @@
 [
   {
-    "name": "Peg Settings",
+    "name": "QFM Peg Settings",
     "url": "https://grahamm89.github.io/PegSetting/",
     "description": "Look up correct QFM peg settings",
     "icon": "🧰",
     "category": "field"
   },
+  {
+    "name": "DQFM & SURE LINK",
+    "url": "https://grahamm89.github.io/DQFMPEG/",
+    "description": "Not live",
+    "icon": "🧪",
+    "category": "field"
+  },  
   {
     "name": "Barchester Audit",
     "url": "https://www.solenis.com/en/",
