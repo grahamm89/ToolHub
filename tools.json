@@ -21,9 +21,9 @@
     "category": "sales"
   },
   {
-    "name": "Reference Tools",
-    "url": "https://www.solenis.com/en/",
-    "description": "Quick-access reference resources for field and technical support.",
+    "name": "Whitbread Support Guides",
+    "url": "https://grahamm89.github.io/WhitbreadAudit/",
+    "description": "Equipment Setup/Dilution Rate/Verification Methods etc",
     "icon": "📚",
     "category": "reference"
   },
