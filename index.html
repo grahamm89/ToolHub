@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Diversey Productivity Tools</title>
-  <link rel="manifest" href="manifest.json">
+  <link rel="manifest" href="/ToolHub/manifest.json">
   <link rel="icon" href="assets/favicon.ico">
   <meta name="theme-color" content="#0ea5a0">
   <style>
@@ -89,8 +89,16 @@
     .btn:active{ transform: translateY(1px); }
     footer{ text-align:center; color:var(--muted); font-size:12px; margin-top:28px; }
   </style>
+<meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="apple-touch-icon" href="/ToolHub/assets/diversey-icon-512.png" sizes="180x180">
+  <meta name="app-scope" content="/ToolHub/">
 </head>
 <body>
+<div id="updateBanner" style="display:none;position:sticky;top:0;z-index:50;background:#065f5b;color:#fff;padding:.75rem 1rem;align-items:center;gap:.75rem">
+    <strong>New tools data available.</strong>
+    <button onclick="applyToolsUpdate()" style="margin-left:auto;border:0;border-radius:8px;padding:.5rem .75rem;cursor:pointer">Refresh</button>
+  </div>
   <div class="wrap">
     <header>
       <img src="assets/diversey-logo.png" alt="Diversey logo" />
@@ -164,5 +172,9 @@
     </div>
   </div>
 
+
+  <script src="/ToolHub/js/in-app-navigation.js" defer></script>
+
+  <script src="/ToolHub/js/pwa-init.js" defer></script>
 </body>
 </html>
