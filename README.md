@@ -2,6 +2,7 @@
 # Diversey Productivity Tools — Final Build
 
 A static, installable PWA hub with category filters, instant updates, and built‑in lightweight analytics.
+https://grahamm89.github.io/ToolHub/
 
 ## Features
 - ✅ **PWA**: `manifest.json` + `service-worker.js` (offline support)
