@@ -18,7 +18,7 @@ jobs:
       - name: Inject build hash into service worker
         run: |
           H=${{ steps.hash.outputs.hash }}
-          sed -i "1s;^;self.__BUILD_HASH__='${H}';\n;" service-worker.js
+          sed -i "1i self.__BUILD_HASH__='${H}'" service-worker.js
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
