@@ -12,7 +12,7 @@
     "description": "Not live",
     "icon": "🧪",
     "category": "field"
-  },  
+  },
   {
     "name": "Barchester Audit",
     "url": "https://www.solenis.com/en/",
@@ -32,7 +32,7 @@
     "url": "https://grahamm89.github.io/XRefDetergent/",
     "description": "description required",
     "icon": "🧪",
-    "category": "Field"
+    "category": "field"
   },
   {
     "name": "Dishwasher Troubleshooter",
@@ -75,5 +75,5 @@
     "description": "Service Now - Customer Support",
     "icon": "👩‍🔬👷‍♂️",
     "category": "field"
-  },
+  }
 ]
