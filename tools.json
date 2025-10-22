@@ -53,7 +53,7 @@
     "url": "https://sds.diversey.com/?guiLang=EN",
     "description": "Access the SDS database",
     "icon": "👩‍🔬👷‍♂️",
-    "category": "reference"
+    "category": "safety"
   },
     {
     "name": "Wellbeing Self-Assessment Tool",
@@ -67,7 +67,7 @@
     "url": "https://solenis.kminnovations.net/Apps/Dashboards/Dashboard.aspx?DashboardCode=INBOX",
     "description": "Report A Safety Incident",
     "icon": "👩‍🔬👷‍♂️",
-    "category": "field"
+    "category": "safety"
   },
       {
     "name": "Service Now",
