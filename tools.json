@@ -61,5 +61,18 @@
     "description": "To be adapted from AHP Tool",
     "icon": "🏥",
     "category": "reference"
+  },
+    {
+    "name": "VelosityEMS",
+    "url": "https://solenis.kminnovations.net/Apps/Dashboards/Dashboard.aspx?DashboardCode=INBOX",
+    "description": "Report A Safety Incident",
+    "icon": "👩‍🔬👷‍♂️",
+    "category": "field"
+  },
+      {
+    "name": "Service Now",
+    "url": "https://support.solenis.com/en/service-now/",
+    "description": "Service Now - Customer Support",
+    "icon": "👩‍🔬👷‍♂️",
+    "category": "field"
   }
-]
