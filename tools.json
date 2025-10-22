@@ -34,45 +34,45 @@
     "icon": "🧪",
     "category": "Field"
   },
-    {
+  {
     "name": "Dishwasher Troubleshooter",
     "url": "https://www.solenis.com/en/",
     "description": "Not Live",
     "icon": "🧰",
     "category": "field"
   },
-    {
+  {
     "name": "Product Support Shop",
     "url": "https://diverseyproductsupport.com/",
     "description": "Place an order for support materials",
     "icon": "🖇️",
     "category": "reference"
   },
-    {
+  {
     "name": "Safety Data Sheets",
     "url": "https://sds.diversey.com/?guiLang=EN",
     "description": "Access the SDS database",
     "icon": "👩‍🔬👷‍♂️",
     "category": "safety"
   },
-    {
+  {
     "name": "Wellbeing Self-Assessment Tool",
     "url": "https://grahamm89.github.io/AHPWellbeing/",
     "description": "To be adapted from AHP Tool",
     "icon": "🏥",
     "category": "reference"
   },
-    {
+  {
     "name": "VelosityEMS",
     "url": "https://solenis.kminnovations.net/Apps/Dashboards/Dashboard.aspx?DashboardCode=INBOX",
     "description": "Report A Safety Incident",
     "icon": "👩‍🔬👷‍♂️",
     "category": "safety"
   },
-      {
+  {
     "name": "Service Now",
     "url": "https://support.solenis.com/en/service-now/",
     "description": "Service Now - Customer Support",
     "icon": "👩‍🔬👷‍♂️",
     "category": "field"
-  }
+  },
