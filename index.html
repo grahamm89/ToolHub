@@ -11,10 +11,37 @@
   <!-- Add the newer, non-Apple meta for mobile web apps (Android / modern browsers) -->
   <meta name="mobile-web-app-capable" content="yes" />
 
+  <!-- Theme color for browsers / PWA UI -->
+  <meta name="theme-color" content="#1976d2" />
+
+  <!-- Windows tile metadata -->
+  <meta name="msapplication-TileColor" content="#1976d2" />
+  <meta name="msapplication-TileImage" content="/icons/ms-icon-144.png" />
+
+  <!-- Link to web app manifest -->
+  <link rel="manifest" href="/manifest.json" />
+
   <title>ToolHub</title>
   <!-- rest of head... -->
 </head>
 <body>
   <!-- page content -->
+
+  <!-- Service worker registration -->
+  <script>
+    (function() {
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/service-worker.js')
+            .then(function(reg) {
+              console.log('Service worker registered:', reg);
+            })
+            .catch(function(err) {
+              console.error('Service worker registration failed:', err);
+            });
+        });
+      }
+    })();
+  </script>
 </body>
 </html>
